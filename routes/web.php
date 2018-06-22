@@ -12,6 +12,7 @@ Route::get('logout','Auth\LoginController@logout')->name('logout.get');
 
 Route::get('/',function(){return view('welcome');});
 Route::get('/','TasksController@index');
+Route::get('share','TasksController@share')->name('tasks.share');
 
 
 Route::group(['middleware'=>['auth']],function(){

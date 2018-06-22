@@ -16,6 +16,14 @@
 {!! Form::label('content','タスク:') !!}
 {!! Form::text('content',null,['class'=>'form-control']) !!}
 </div>
+
+<div class='form-group'>
+{!! Form::label('share','共有') !!}
+{!! Form::hidden('share', 0) !!}
+{!! Form::checkbox('share', 1 ,["class"=>'form-control']) !!}
+
+</div>
+
 {!! Form::submit('投稿',['class'=>'btn btn-primary']) !!}
 
 {!! Form::close() !!}

@@ -22,6 +22,8 @@
                 <ul class='dropdown-menu'>
                     <li>{!! link_to_route('users.show','My Tasks',['id'=>Auth::id()]) !!}</li>
                     <li class='divider' role='separetor'></li>
+                    <li>{!! link_to_route('tasks.share','Share Tasks') !!}</li>
+                    <li class='divider' role='separetor'></li>
                     <li>{!! link_to_route('logout.get','Logout') !!}</li>
                 </ul>
                 

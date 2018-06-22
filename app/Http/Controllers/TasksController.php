@@ -45,11 +45,13 @@ class TasksController extends Controller
      */
     public function store(Request $request)
     {   
+       
         $id=\Auth::id();
         $this->validate($request,['status'=>'required|max:10','content'=>'required|max:191']);
         $task=new Task;
         $task->status=$request->status;
         $task->content=$request->content;
+        $task->share=$request->share;
         $task->user_id=$id;
         $task->save();
         return redirect()->route('users.show',['id'=>$id]);
@@ -66,8 +68,10 @@ class TasksController extends Controller
         $task=Task::find($id);
          if (\Auth::id() === $task->user_id){
         return view('tasks.show',['task'=>$task]);
+    }elseif($task->share == 1){
+        return view('tasks.show',['task'=>$task]);
     }else{
-        return redirect('/');
+        return redirect('/');   
     }
     }
 
@@ -82,6 +86,8 @@ class TasksController extends Controller
          
         $task=Task::find($id);
         if (\Auth::id() === $task->user_id){
+        return view('tasks.edit',['task'=>$task]);
+    }elseif($task->share == 1){
         return view('tasks.edit',['task'=>$task]);
     }else{
         return redirect('/');   
@@ -103,6 +109,7 @@ class TasksController extends Controller
         $task=Task::find($id);
         $task->status=$request->status;
         $task->content=$request->content;
+        $task->share=$request->share;
         $task->save();
         
         return redirect()->route('users.show',['id'=>$user_id]);
@@ -122,8 +129,26 @@ class TasksController extends Controller
     $task->delete();
     
     return redirect()->route('users.show',['id'=>$user_id]);
+    }elseif($task->share == 1){
+        $task->delete();
+    
+    return redirect()->route('users.show',['id'=>$user_id]);
     }else{
         return redirect('/');
     }
 }
+
+    public function share(){
+        if(\Auth::check()){
+            
+            $tasks=Task::where('share',true)->get();
+            
+            return view('tasks.share',['tasks'=>$tasks]);
+        }else{
+            return view('welcome');
+        }
+        
+    }
+
+
 }
