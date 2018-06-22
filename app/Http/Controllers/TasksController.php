@@ -15,9 +15,16 @@ class TasksController extends Controller
      */
     public function index()
     {
+        if(\Auth::check()){
         $tasks=\Auth::user()->tasks();
-        return view('tasks.index',['tasks'=>$tasks]);
+        $user=\Auth::user();
+        return redirect()->route('users.show',['id'=>$user->id]);
+    }else{
+        return view('welcome');
+        
     }
+    }
+    
 
     /**
      * Show the form for creating a new resource.

@@ -11,6 +11,7 @@ Route::get('logout','Auth\LoginController@logout')->name('logout.get');
 
 
 Route::get('/',function(){return view('welcome');});
+Route::get('/','TasksController@index');
 
 
 Route::group(['middleware'=>['auth']],function(){
