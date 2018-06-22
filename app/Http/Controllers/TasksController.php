@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Task;
+use App\User;
 
 class TasksController extends Controller
 {
@@ -14,7 +15,7 @@ class TasksController extends Controller
      */
     public function index()
     {
-        $tasks=Task::all();
+        $tasks=\Auth::user()->tasks();
         return view('tasks.index',['tasks'=>$tasks]);
     }
 
@@ -36,13 +37,15 @@ class TasksController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {   
+        $id=\Auth::id();
         $this->validate($request,['status'=>'required|max:10','content'=>'required|max:191']);
         $task=new Task;
         $task->status=$request->status;
         $task->content=$request->content;
+        $task->user_id=$id;
         $task->save();
-        return redirect('/');
+        return redirect()->route('users.show',['id'=>$id]);
     }
 
     /**
@@ -54,7 +57,11 @@ class TasksController extends Controller
     public function show($id)
     {
         $task=Task::find($id);
+         if (\Auth::id() === $task->user_id){
         return view('tasks.show',['task'=>$task]);
+    }else{
+        return redirect('/');
+    }
     }
 
     /**
@@ -65,9 +72,15 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
+         
         $task=Task::find($id);
+        if (\Auth::id() === $task->user_id){
         return view('tasks.edit',['task'=>$task]);
+    }else{
+        return redirect('/');   
     }
+    }
+    
 
     /**
      * Update the specified resource in storage.
@@ -78,13 +91,14 @@ class TasksController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $user_id=\Auth::id();
         $this->validate($request,['status'=>'required|max:10','content'=>'required|max:191']);
         $task=Task::find($id);
         $task->status=$request->status;
         $task->content=$request->content;
         $task->save();
         
-        return redirect('/');
+        return redirect()->route('users.show',['id'=>$user_id]);
     }
 
     /**
@@ -95,9 +109,14 @@ class TasksController extends Controller
      */
     public function destroy($id)
     {
+    $user_id=\Auth::id();    
     $task=Task::find($id);
+    if (\Auth::id() === $task->user_id){
     $task->delete();
     
-    return redirect("/");
+    return redirect()->route('users.show',['id'=>$user_id]);
+    }else{
+        return redirect('/');
     }
+}
 }
